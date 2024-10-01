@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package oss.v1;
+
+import "openapiv3/annotations.proto";
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/empty.proto";
+import "cinch/params/params.proto";
+
+option go_package = "api/oss;oss";
+option java_multiple_files = true;
+option java_package = "oss.v1";
+option java_outer_classname = "OssProtoV1";
+
+option (openapi.v3.document) = {
+  info: {
+    title: "Oss service";
+    version: "1.0.0";
+    description: "This is oss service docs";
+  }
+  components: {
+    security_schemes: {
+      additional_properties: [
+        {
+          name: "BearerAuth";
+          value: {
+            security_scheme: {
+              type: "http";
+              scheme: "bearer";
+            }
+          }
+        }
+      ]
+    }
+  }
+  security: [
+    {
+      additional_properties: [
+        {
+          name: "BearerAuth";
+          value: {
+            value: []
+          }
+        }
+      ]
+    }
+  ]
+};
+
+service Oss {
+  rpc PreSigned(PreSignedRequest) returns (PreSignedReply) {
+    option (google.api.http) = {
+      post: "/pre/signed"
+      body: "*"
+    };
+  }
+}
+
+enum PreSignedCategory {
+  GET = 0;
+  PUT = 1;
+  HEAD = 2;
+}
+
+message PreSignedRequest {
+  PreSignedCategory category = 1;
+  string name = 2;
+}
+
+message PreSignedReply {
+  string uri = 1;
+}

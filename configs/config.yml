@@ -1,0 +1,34 @@
+server:
+  prod: false
+  machineId: ''
+  http:
+    addr: 0.0.0.0:8080
+    timeout: 20s
+  grpc:
+    addr: 0.0.0.0:8180
+    timeout: 20s
+  language: 'en'
+  idempotent: false
+  validate: false
+  # disable biz.Cache or not
+  nocache: false
+data:
+  database:
+    driver: mysql
+    # dsn: 'root:root@tcp(127.0.0.1:3306)/oss?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=True&loc=Local&timeout=10000ms'
+    dsn: ''
+    endpoint: '127.0.0.1:3306'
+    username: 'root'
+    password: 'passwd'
+    schema: 'oss'
+    query: 'charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=True&loc=Local&timeout=10000ms'
+#    tenants:
+#      oss.go-cinch.top: 'root:root@tcp(127.0.0.1:3306)/oss?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=True&loc=Local&timeout=10000ms}'
+#      oss2.go-cinch.top: 'root:root@tcp(127.0.0.1:3306)/oss2?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=True&loc=Local&timeout=10000ms'
+#      oss3.go-cinch.top: 'root:root@tcp(127.0.0.1:3306)/oss3?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=True&loc=Local&timeout=10000ms'
+#      oss4.go-cinch.top: 'root:root@tcp(127.0.0.1:3306)/oss4?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=True&loc=Local&timeout=10000ms'
+  redis:
+    # redis dsn like this:
+    # redis://[:password@]host[:port][/dbnumber]
+    # redis://[:password@]host1[:port][,host2:[:port]][,hostN:[:port]][?master=masterName&sentinel=true]
+    dsn: 'redis://127.0.0.1:6379/0'

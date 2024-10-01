@@ -1,0 +1,50 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: Oss service
+    description: This is oss service docs
+    version: 1.0.0
+paths:
+    /pre/signed:
+        post:
+            tags:
+                - Oss
+            operationId: Oss_PreSigned
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/oss.v1.PreSignedRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/oss.v1.PreSignedReply'
+components:
+    schemas:
+        oss.v1.PreSignedReply:
+            type: object
+            properties:
+                uri:
+                    type: string
+        oss.v1.PreSignedRequest:
+            type: object
+            properties:
+                category:
+                    type: integer
+                    format: enum
+                name:
+                    type: string
+    securitySchemes:
+        BearerAuth:
+            type: http
+            scheme: bearer
+security:
+    - BearerAuth: []
+tags:
+    - name: Oss

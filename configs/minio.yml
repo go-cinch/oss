@@ -1,0 +1,7 @@
+minio:
+  endpoint: 'minio-api.go-cinch.top'
+  key: '5dPKP49qZrm5i4875zUM'
+  secret: 'Y0lyCQ8gp2HpZRXUeIr04LRYih6uWQEQF5A0LGAe'
+  bucket: 'test'
+  expire: '72h'
+  ssl: true
