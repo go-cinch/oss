@@ -1,0 +1,27 @@
+name: Build
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+
+  build_and_push:
+    name: Build and Push Docker image
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+    - name: Check out the repo
+      uses: actions/checkout@v4
+
+    - name: Build and publish a Docker image for ${{ github.repository }}
+      uses: macbre/push-to-ghcr@master
+      with:
+        image_name: ${{ github.repository }}  # it will be lowercased internally
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        dockerfile: ./Dockerfile
+        image_tag: latest
