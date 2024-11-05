@@ -18,9 +18,10 @@ type OssService struct {
 	task  *worker.Worker
 	minio *minio.Minio
 	oss   *biz.OssUseCase
+	ocr   *biz.OcrUseCase
 }
 
 // NewOssService new a service.
-func NewOssService(task *worker.Worker, minio *minio.Minio, oss *biz.OssUseCase) *OssService {
-	return &OssService{task: task, minio: minio, oss: oss}
+func NewOssService(task *worker.Worker, minio *minio.Minio, oss *biz.OssUseCase, ocr *biz.OcrUseCase) *OssService {
+	return &OssService{task: task, minio: minio, oss: oss, ocr: ocr}
 }

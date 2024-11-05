@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Oss_PreSigned_FullMethodName = "/oss.v1.Oss/PreSigned"
+	Oss_Ocr_FullMethodName       = "/oss.v1.Oss/Ocr"
 )
 
 // OssClient is the client API for Oss service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OssClient interface {
 	PreSigned(ctx context.Context, in *PreSignedRequest, opts ...grpc.CallOption) (*PreSignedReply, error)
+	Ocr(ctx context.Context, in *OcrRequest, opts ...grpc.CallOption) (*OcrReply, error)
 }
 
 type ossClient struct {
@@ -46,11 +48,21 @@ func (c *ossClient) PreSigned(ctx context.Context, in *PreSignedRequest, opts ..
 	return out, nil
 }
 
+func (c *ossClient) Ocr(ctx context.Context, in *OcrRequest, opts ...grpc.CallOption) (*OcrReply, error) {
+	out := new(OcrReply)
+	err := c.cc.Invoke(ctx, Oss_Ocr_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OssServer is the server API for Oss service.
 // All implementations must embed UnimplementedOssServer
 // for forward compatibility
 type OssServer interface {
 	PreSigned(context.Context, *PreSignedRequest) (*PreSignedReply, error)
+	Ocr(context.Context, *OcrRequest) (*OcrReply, error)
 	mustEmbedUnimplementedOssServer()
 }
 
@@ -60,6 +72,9 @@ type UnimplementedOssServer struct {
 
 func (UnimplementedOssServer) PreSigned(context.Context, *PreSignedRequest) (*PreSignedReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PreSigned not implemented")
+}
+func (UnimplementedOssServer) Ocr(context.Context, *OcrRequest) (*OcrReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ocr not implemented")
 }
 func (UnimplementedOssServer) mustEmbedUnimplementedOssServer() {}
 
@@ -92,6 +107,24 @@ func _Oss_PreSigned_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Oss_Ocr_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OcrRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OssServer).Ocr(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Oss_Ocr_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OssServer).Ocr(ctx, req.(*OcrRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Oss_ServiceDesc is the grpc.ServiceDesc for Oss service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -102,6 +135,10 @@ var Oss_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PreSigned",
 			Handler:    _Oss_PreSigned_Handler,
+		},
+		{
+			MethodName: "Ocr",
+			Handler:    _Oss_Ocr_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

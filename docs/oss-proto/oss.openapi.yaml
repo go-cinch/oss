@@ -7,6 +7,24 @@ info:
     description: This is oss service docs
     version: 1.0.0
 paths:
+    /ocr:
+        post:
+            tags:
+                - Oss
+            operationId: Oss_Ocr
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/oss.v1.OcrRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/oss.v1.OcrReply'
     /pre/signed:
         post:
             tags:
@@ -27,6 +45,35 @@ paths:
                                 $ref: '#/components/schemas/oss.v1.PreSignedReply'
 components:
     schemas:
+        oss.v1.OcrItem:
+            type: object
+            properties:
+                boxes:
+                    type: string
+                confidence:
+                    type: string
+                text:
+                    type: string
+                parseLatency:
+                    type: string
+                ocrLatency:
+                    type: string
+                msg:
+                    type: string
+        oss.v1.OcrReply:
+            type: object
+            properties:
+                list:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/oss.v1.OcrItem'
+        oss.v1.OcrRequest:
+            type: object
+            properties:
+                list:
+                    type: array
+                    items:
+                        type: string
         oss.v1.PreSignedReply:
             type: object
             properties:

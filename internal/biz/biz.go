@@ -9,7 +9,7 @@ import (
 
 // ProviderSet is biz providers.
 var ProviderSet = wire.NewSet(
-	NewOssUseCase,
+	NewOssUseCase, NewOcrUseCase,
 )
 
 type Transaction interface {

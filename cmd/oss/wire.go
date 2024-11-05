@@ -12,6 +12,7 @@ import (
 	"oss/internal/conf"
 	"oss/internal/data"
 	"oss/internal/pkg/minio"
+	"oss/internal/pkg/ocr"
 	"oss/internal/pkg/task"
 	"oss/internal/server"
 	"oss/internal/service"
@@ -19,5 +20,5 @@ import (
 
 // wireApp init kratos application.
 func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
-	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, task.ProviderSet, minio.ProviderSet, service.ProviderSet, newApp))
+	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, task.ProviderSet, minio.ProviderSet, service.ProviderSet, ocr.ProviderSet, newApp))
 }
