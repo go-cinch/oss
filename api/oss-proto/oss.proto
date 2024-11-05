@@ -55,6 +55,12 @@ service Oss {
       body: "*"
     };
   }
+  rpc Ocr(OcrRequest) returns (OcrReply) {
+    option (google.api.http) = {
+      post: "/ocr"
+      body: "*"
+    };
+  }
 }
 
 enum PreSignedCategory {
@@ -70,4 +76,21 @@ message PreSignedRequest {
 
 message PreSignedReply {
   string uri = 1;
+}
+
+message OcrRequest {
+  repeated string list = 1;
+}
+
+message OcrItem {
+  string boxes = 1;
+  string confidence = 2;
+  string text = 3;
+  int64 parseLatency = 4;
+  int64 ocrLatency = 5;
+  string msg = 6;
+}
+
+message OcrReply {
+  repeated OcrItem list = 1;
 }

@@ -12,6 +12,7 @@ import (
 	"oss/internal/conf"
 	"oss/internal/data"
 	"oss/internal/pkg/minio"
+	"oss/internal/pkg/ocr"
 	"oss/internal/pkg/task"
 	"oss/internal/server"
 	"oss/internal/service"
@@ -59,7 +60,13 @@ func wireApp(c *conf.Bootstrap) (*kratos.App, func(), error) {
 	transaction := data.NewTransaction(dataData)
 	cache := data.NewCache(c, universalClient)
 	ossUseCase := biz.NewOssUseCase(c, ossRepo, transaction, cache)
-	ossService := service.NewOssService(worker, minioMinio, ossUseCase)
+	api, err := ocr.New(c)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	ocrUseCase := biz.NewOcrUseCase(c, api)
+	ossService := service.NewOssService(worker, minioMinio, ossUseCase, ocrUseCase)
 	grpcServer := server.NewGRPCServer(c, ossService, authClient)
 	httpServer := server.NewHTTPServer(c, ossService, authClient)
 	app := newApp(grpcServer, httpServer)

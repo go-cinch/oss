@@ -15,6 +15,7 @@ message Bootstrap {
   Client client = 7;
   Log log = 8;
   Minio minio = 9;
+  Ocr ocr = 10;
 }
 
 message Server {
@@ -96,4 +97,8 @@ message Minio {
   string bucket = 4;
   string expire = 5;
   bool ssl = 6;
+}
+
+message Ocr {
+  string host = 1;
 }
