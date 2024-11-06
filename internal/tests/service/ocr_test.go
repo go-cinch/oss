@@ -74,13 +74,13 @@ func TestOssService_BatchOcr(t *testing.T) {
 	memory := base64Captcha.NewMemoryStore(100, 10*time.Minute)
 	num := 4
 	width := num * 45
-	c := base64Captcha.NewCaptcha(base64Captcha.NewDriverDigit(80, width, num, 0.7, 80), memory)
-	_, img, answer, _ := c.Generate()
-	img = strings.TrimPrefix(img, "data:image/png;base64,")
-	imageData, _ := base64.StdEncoding.DecodeString(img)
 
 	files := make([]string, 0)
 	for i := 0; i < 100; i++ {
+		c := base64Captcha.NewCaptcha(base64Captcha.NewDriverDigit(80, width, num, 0.7, 80), memory)
+		_, img, answer, _ := c.Generate()
+		img = strings.TrimPrefix(img, "data:image/png;base64,")
+		imageData, _ := base64.StdEncoding.DecodeString(img)
 		object := strings.Join([]string{"val", strconv.FormatInt(int64(i+1), 10) + "-" + answer + ".png"}, "/")
 		tmpPath := strings.Join([]string{"/tmp", object}, "/")
 		_ = os.MkdirAll(path.Dir(tmpPath), os.ModePerm)
@@ -109,7 +109,8 @@ func callOcr(ctx context.Context, images []string) (err error) {
 
 	req, _ := http.NewRequestWithContext(ctx, http.MethodPost, uri, bytes.NewReader([]byte(utils.Struct2Json(
 		struct {
-			List []string `json:"list"`
+			List    []string `json:"list"`
+			Latency string    `json:"latency"`
 		}{
 			List: images,
 		},
@@ -125,7 +126,8 @@ func callOcr(ctx context.Context, images []string) (err error) {
 	}
 
 	var response struct {
-		List []map[string]interface{} `json:"list"`
+		List    []map[string]interface{} `json:"list"`
+		Latency string                    `json:"latency"`
 	}
 	err = json.Unmarshal(body, &response)
 	if err != nil {
@@ -138,6 +140,7 @@ func callOcr(ctx context.Context, images []string) (err error) {
 		return
 	}
 	fmt.Println(response.List)
+	fmt.Println(response.Latency)
 	return
 }
 
