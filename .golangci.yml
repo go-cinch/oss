@@ -1,7 +1,10 @@
 run:
   go: '1.22'
   timeout: '5m'
-  skip-files: [ ]
+
+issues:
+  exclude-files:
+  - 'internal/tests/service/ocr_test.go'
 
 linters:
   enable:

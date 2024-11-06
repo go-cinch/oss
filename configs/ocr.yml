@@ -1,2 +1,3 @@
 ocr:
-  host: 'ocr:80'
+  host: 'http://ocr/predict'
+  concurrency: 100

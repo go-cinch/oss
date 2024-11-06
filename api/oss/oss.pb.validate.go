@@ -506,6 +506,8 @@ func (m *OcrReply) validate(all bool) error {
 
 	}
 
+	// no validation rules for Latency
+
 	if len(errors) > 0 {
 		return OcrReplyMultiError(errors)
 	}

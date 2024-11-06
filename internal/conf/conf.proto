@@ -101,4 +101,5 @@ message Minio {
 
 message Ocr {
   string host = 1;
+  int32 concurrency = 2;
 }
