@@ -373,6 +373,8 @@ func (m *OcrItem) validate(all bool) error {
 
 	// no validation rules for Msg
 
+	// no validation rules for Original
+
 	if len(errors) > 0 {
 		return OcrItemMultiError(errors)
 	}
