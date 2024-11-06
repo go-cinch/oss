@@ -89,6 +89,7 @@ message OcrItem {
   int64 parseLatency = 4;
   int64 ocrLatency = 5;
   string msg = 6;
+  string original = 7;
 }
 
 message OcrReply {

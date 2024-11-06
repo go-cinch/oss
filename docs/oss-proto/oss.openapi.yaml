@@ -60,6 +60,8 @@ components:
                     type: string
                 msg:
                     type: string
+                original:
+                    type: string
         oss.v1.OcrReply:
             type: object
             properties:

@@ -36,10 +36,11 @@ func (uc *OcrUseCase) Ocr(ctx context.Context, images ...string) (list []OcrItem
 	list = make([]OcrItem, len(images))
 	for i, item := range images {
 		wg.Add(1)
-		go func(i int) {
+		go func(idx int, data string) {
 			defer wg.Done()
-			list[i] = *uc.processOcrRequest(ctx, sem, item)
-		}(i)
+			list[idx] = *uc.processOcrRequest(ctx, sem, data)
+			list[idx].Original = data
+		}(i, item)
 	}
 	wg.Wait()
 	return

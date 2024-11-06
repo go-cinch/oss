@@ -1,6 +1,7 @@
 package biz
 
 type OcrItem struct {
+	Original     string `json:"original"`
 	Boxes        string `json:"boxes"`
 	Confidence   string `json:"confidence"`
 	Text         string `json:"text"`
