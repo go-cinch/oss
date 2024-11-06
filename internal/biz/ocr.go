@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"sync"
 	"time"
 
 	"oss/internal/conf"
@@ -26,35 +27,46 @@ func NewOcrUseCase(c *conf.Bootstrap, ocr ocr.API) *OcrUseCase {
 }
 
 func (uc *OcrUseCase) Ocr(ctx context.Context, images ...string) (list []OcrItem) {
+	var wg sync.WaitGroup
+	concurrency := uc.c.Ocr.Concurrency
+	if concurrency <= 0 {
+		concurrency = 10
+	}
+	sem := make(chan struct{}, concurrency)
 	list = make([]OcrItem, len(images))
-	for i, image := range images {
-		now := time.Now().UnixMilli()
-		imageData, err := toBase64(image)
-		if err != nil {
-			list[i].Msg = err.Error()
-			continue
-		}
-		list[i].Base64Data = imageData
-		list[i].ParseLatency = time.Now().UnixMilli() - now
+	for i, item := range images {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			list[i] = *uc.processOcrRequest(ctx, sem, item)
+		}(i)
 	}
+	wg.Wait()
+	return
+}
 
-	for i, item := range list {
-		if item.Msg != "" {
-			continue
-		}
-		now := time.Now().UnixMilli()
-		res, err := uc.ocr.Ocr(ctx, item.Base64Data)
-		if err != nil {
-			list[i].Msg = err.Error()
-			continue
-		}
-		list[i].OcrLatency = time.Now().UnixMilli() - now
-		list[i].Confidence = strconv.FormatFloat(res.Confidence, 'f', -1, 64)
-		list[i].Text = res.Text
-		boxes, _ := json.Marshal(res.TextRegion)
-		list[i].Boxes = string(boxes)
+func (uc *OcrUseCase) processOcrRequest(ctx context.Context, sem chan struct{}, image string) (item *OcrItem) {
+	sem <- struct{}{}
+	defer func() { <-sem }()
+	item = &OcrItem{}
+	now := time.Now().UnixMilli()
+	imageData, err := toBase64(image)
+	item.ParseLatency = time.Now().UnixMilli() - now
+	if err != nil {
+		item.Msg = err.Error()
+		return
 	}
-
+	now = time.Now().UnixMilli()
+	res, err := uc.ocr.Ocr(ctx, imageData)
+	item.OcrLatency = time.Now().UnixMilli() - now
+	if err != nil {
+		item.Msg = err.Error()
+		return
+	}
+	item.Confidence = strconv.FormatFloat(res.Confidence, 'f', -1, 64)
+	item.Text = res.Text
+	boxes, _ := json.Marshal(res.TextRegion)
+	item.Boxes = string(boxes)
 	return
 }
 

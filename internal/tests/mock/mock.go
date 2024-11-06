@@ -16,8 +16,7 @@ import (
 )
 
 func OssService() (ossService *service.OssService) {
-	ossUseCase := OssUseCase()
-	ossService = service.NewOssService(nil, ossUseCase)
+	ossService = service.NewOssService(nil, nil, OssUseCase(), OcrUseCase())
 	return
 }
 
@@ -26,6 +25,13 @@ func OssUseCase() (ossUseCase *biz.OssUseCase) {
 	ossRepo := OssRepo()
 	transaction := data.NewTransaction(dataData)
 	ossUseCase = biz.NewOssUseCase(c, ossRepo, transaction, cache)
+	return
+}
+
+func OcrUseCase() (uc *biz.OcrUseCase) {
+	c, _, _ := Data()
+	ocr, _ := NewOcr()
+	uc = biz.NewOcrUseCase(c, ocr)
 	return
 }
 
@@ -166,6 +172,10 @@ func MySQLAndRedis() *conf.Bootstrap {
 			Enable: true,
 			Otlp:   &conf.Tracer_Otlp{},
 			Stdout: &conf.Tracer_Stdout{},
+		},
+		Ocr: &conf.Ocr{
+			Host:        "...",
+			Concurrency: 100,
 		},
 	}
 }

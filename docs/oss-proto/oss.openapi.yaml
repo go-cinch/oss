@@ -67,6 +67,8 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/oss.v1.OcrItem'
+                latency:
+                    type: string
         oss.v1.OcrRequest:
             type: object
             properties:

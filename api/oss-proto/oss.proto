@@ -93,4 +93,5 @@ message OcrItem {
 
 message OcrReply {
   repeated OcrItem list = 1;
+  int64 latency = 2;
 }
