@@ -54,21 +54,13 @@ components:
                     type: string
                 text:
                     type: string
-                parseLatency:
-                    type: string
-                ocrLatency:
-                    type: string
-                msg:
-                    type: string
-                original:
-                    type: string
         oss.v1.OcrReply:
             type: object
             properties:
                 list:
                     type: array
                     items:
-                        $ref: '#/components/schemas/oss.v1.OcrItem'
+                        $ref: '#/components/schemas/oss.v1.OcrResult'
                 latency:
                     type: string
         oss.v1.OcrRequest:
@@ -78,6 +70,21 @@ components:
                     type: array
                     items:
                         type: string
+        oss.v1.OcrResult:
+            type: object
+            properties:
+                original:
+                    type: string
+                msg:
+                    type: string
+                list:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/oss.v1.OcrItem'
+                parseLatency:
+                    type: string
+                ocrLatency:
+                    type: string
         oss.v1.PreSignedReply:
             type: object
             properties:

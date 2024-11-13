@@ -14,11 +14,15 @@ func NewOcr() (api ocr.API, err error) {
 	return &Ocr{}, nil
 }
 
-func (Ocr) Ocr(_ context.Context, _ string) (rp *ocr.Resp, err error) {
+func (Ocr) Ocr(_ context.Context, _ string) ([][]ocr.Resp, error) {
 	time.Sleep(100 * time.Millisecond)
-	return &ocr.Resp{
-		Confidence: 0,
-		Text:       "1000",
-		TextRegion: [][]int{{0, 0}},
+	return [][]ocr.Resp{
+		{
+			{
+				Confidence: 0,
+				Text:       "1000",
+				TextRegion: [][]int{{0, 0}},
+			},
+		},
 	}, nil
 }
