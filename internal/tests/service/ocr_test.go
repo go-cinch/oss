@@ -302,7 +302,7 @@ func TestOssService_BatchOcr(t *testing.T) {
 		go func() {
 			_ = callOcr(context.Background(), lo.Shuffle(Images)[:5])
 		}()
-		time.Sleep(1000*time.Millisecond)
+		time.Sleep(1000 * time.Millisecond)
 	}
 }
 
@@ -316,20 +316,15 @@ func callOcr(ctx context.Context, images []string) (err error) {
 	req, _ := http.NewRequestWithContext(ctx, http.MethodPost, uri, bytes.NewReader([]byte(utils.Struct2Json(
 		struct {
 			List    []string `json:"list"`
-			Latency string   `json:"latency"`
 		}{
 			List: images,
 		},
 	))))
 
-	req.Header.Add("X-Canary",
-		"iwantsit")
-	req.Header.Add("Accept",
-		"application/json")
-	req.Header.Add("Content-Type",
-		"application/json")
-	req.Header.Add("Authorization",
-		"Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjb2RlIjoiODlIRUsyOFkiLCJleHAiOjE3MzA5NDYzOTMsInBsYXRmb3JtIjoicGMifQ.DaVxfcHe9gkmpn5fD1bSrUrkMK0XPOGxkZ-f_0wXPjGcTCOHEZeKv5y74LK7K6S1z2oUzXReweSaoccTOMLiag")
+	req.Header.Add("X-Canary", "iwantsit")
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjb2RlIjoiODlIRUsyOFkiLCJleHAiOjE3MzA5NDYzOTMsInBsYXRmb3JtIjoicGMifQ.DaVxfcHe9gkmpn5fD1bSrUrkMK0XPOGxkZ-f_0wXPjGcTCOHEZeKv5y74LK7K6S1z2oUzXReweSaoccTOMLiag")
 
 	body, err := call(ctx, req)
 	if err != nil {

@@ -26,48 +26,55 @@ func NewOcrUseCase(c *conf.Bootstrap, ocr ocr.API) *OcrUseCase {
 	}
 }
 
-func (uc *OcrUseCase) Ocr(ctx context.Context, images ...string) (list []OcrItem) {
+func (uc *OcrUseCase) Ocr(ctx context.Context, images ...string) (list []OcrResult) {
 	var wg sync.WaitGroup
 	concurrency := uc.c.Ocr.Concurrency
 	if concurrency <= 0 {
 		concurrency = 10
 	}
 	sem := make(chan struct{}, concurrency)
-	list = make([]OcrItem, len(images))
+	list = make([]OcrResult, len(images))
 	for i, item := range images {
 		wg.Add(1)
 		go func(idx int, data string) {
 			defer wg.Done()
 			list[idx] = *uc.processOcrRequest(ctx, sem, data)
-			list[idx].Original = data
 		}(i, item)
 	}
 	wg.Wait()
 	return
 }
 
-func (uc *OcrUseCase) processOcrRequest(ctx context.Context, sem chan struct{}, image string) (item *OcrItem) {
+func (uc *OcrUseCase) processOcrRequest(ctx context.Context, sem chan struct{}, image string) (rp *OcrResult) {
 	sem <- struct{}{}
 	defer func() { <-sem }()
-	item = &OcrItem{}
+	rp = &OcrResult{
+		Original: image,
+	}
 	now := time.Now().UnixMilli()
 	imageData, err := toBase64(image)
-	item.ParseLatency = time.Now().UnixMilli() - now
+	rp.ParseLatency = time.Now().UnixMilli() - now
 	if err != nil {
-		item.Msg = err.Error()
+		rp.Msg = err.Error()
 		return
 	}
 	now = time.Now().UnixMilli()
 	res, err := uc.ocr.Ocr(ctx, imageData)
-	item.OcrLatency = time.Now().UnixMilli() - now
+	rp.OcrLatency = time.Now().UnixMilli() - now
 	if err != nil {
-		item.Msg = err.Error()
+		rp.Msg = err.Error()
 		return
 	}
-	item.Confidence = strconv.FormatFloat(res.Confidence, 'f', -1, 64)
-	item.Text = res.Text
-	boxes, _ := json.Marshal(res.TextRegion)
-	item.Boxes = string(boxes)
+	for _, v1 := range res {
+		for _, v2 := range v1 {
+			boxes, _ := json.Marshal(v2.TextRegion)
+			rp.List = append(rp.List, OcrItem{
+				Boxes:      string(boxes),
+				Confidence: strconv.FormatFloat(v2.Confidence, 'f', -1, 64),
+				Text:       v2.Text,
+			})
+		}
+	}
 	return
 }
 

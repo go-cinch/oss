@@ -37,7 +37,7 @@ func New(c *conf.Bootstrap) (api API, err error) {
 	}, nil
 }
 
-func (c Ocr) Ocr(ctx context.Context, image string) (rp *Resp, err error) {
+func (c Ocr) Ocr(ctx context.Context, image string) (rp [][]Resp, err error) {
 	host := strings.Join([]string{c.host, "ocr_system"}, "/")
 	res, err := callOcr[[][]Resp](
 		ctx,
@@ -53,8 +53,8 @@ func (c Ocr) Ocr(ctx context.Context, image string) (rp *Resp, err error) {
 	if err != nil {
 		return
 	}
-	if len(res) > 0 && len(res[0]) > 0 {
-		rp = &res[0][0]
+	if len(res) > 0 {
+		rp = res
 		return
 	}
 	err = errors.New("cannot recognize")
