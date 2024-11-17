@@ -340,22 +340,22 @@ var _ interface {
 	ErrorName() string
 } = OcrRequestValidationError{}
 
-// Validate checks the field values on OcrResult with the rules defined in the
+// Validate checks the field values on OcrDetail with the rules defined in the
 // proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.
-func (m *OcrResult) Validate() error {
+func (m *OcrDetail) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on OcrResult with the rules defined in
+// ValidateAll checks the field values on OcrDetail with the rules defined in
 // the proto definition for this message. If any rules are violated, the
-// result is a list of violation errors wrapped in OcrResultMultiError, or nil
+// result is a list of violation errors wrapped in OcrDetailMultiError, or nil
 // if none found.
-func (m *OcrResult) ValidateAll() error {
+func (m *OcrDetail) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *OcrResult) validate(all bool) error {
+func (m *OcrDetail) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -366,23 +366,31 @@ func (m *OcrResult) validate(all bool) error {
 
 	// no validation rules for Msg
 
-	for idx, item := range m.GetList() {
+	// no validation rules for ParseLatency
+
+	// no validation rules for DetLatency
+
+	// no validation rules for ClsLatency
+
+	// no validation rules for RecLatency
+
+	for idx, item := range m.GetPoints() {
 		_, _ = idx, item
 
 		if all {
 			switch v := interface{}(item).(type) {
 			case interface{ ValidateAll() error }:
 				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, OcrResultValidationError{
-						field:  fmt.Sprintf("List[%v]", idx),
+					errors = append(errors, OcrDetailValidationError{
+						field:  fmt.Sprintf("Points[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
 					})
 				}
 			case interface{ Validate() error }:
 				if err := v.Validate(); err != nil {
-					errors = append(errors, OcrResultValidationError{
-						field:  fmt.Sprintf("List[%v]", idx),
+					errors = append(errors, OcrDetailValidationError{
+						field:  fmt.Sprintf("Points[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
 					})
@@ -390,8 +398,8 @@ func (m *OcrResult) validate(all bool) error {
 			}
 		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
 			if err := v.Validate(); err != nil {
-				return OcrResultValidationError{
-					field:  fmt.Sprintf("List[%v]", idx),
+				return OcrDetailValidationError{
+					field:  fmt.Sprintf("Points[%v]", idx),
 					reason: "embedded message failed validation",
 					cause:  err,
 				}
@@ -400,23 +408,19 @@ func (m *OcrResult) validate(all bool) error {
 
 	}
 
-	// no validation rules for ParseLatency
-
-	// no validation rules for OcrLatency
-
 	if len(errors) > 0 {
-		return OcrResultMultiError(errors)
+		return OcrDetailMultiError(errors)
 	}
 
 	return nil
 }
 
-// OcrResultMultiError is an error wrapping multiple validation errors returned
-// by OcrResult.ValidateAll() if the designated constraints aren't met.
-type OcrResultMultiError []error
+// OcrDetailMultiError is an error wrapping multiple validation errors returned
+// by OcrDetail.ValidateAll() if the designated constraints aren't met.
+type OcrDetailMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m OcrResultMultiError) Error() string {
+func (m OcrDetailMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -425,11 +429,11 @@ func (m OcrResultMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m OcrResultMultiError) AllErrors() []error { return m }
+func (m OcrDetailMultiError) AllErrors() []error { return m }
 
-// OcrResultValidationError is the validation error returned by
-// OcrResult.Validate if the designated constraints aren't met.
-type OcrResultValidationError struct {
+// OcrDetailValidationError is the validation error returned by
+// OcrDetail.Validate if the designated constraints aren't met.
+type OcrDetailValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -437,22 +441,22 @@ type OcrResultValidationError struct {
 }
 
 // Field function returns field value.
-func (e OcrResultValidationError) Field() string { return e.field }
+func (e OcrDetailValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e OcrResultValidationError) Reason() string { return e.reason }
+func (e OcrDetailValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e OcrResultValidationError) Cause() error { return e.cause }
+func (e OcrDetailValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e OcrResultValidationError) Key() bool { return e.key }
+func (e OcrDetailValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e OcrResultValidationError) ErrorName() string { return "OcrResultValidationError" }
+func (e OcrDetailValidationError) ErrorName() string { return "OcrDetailValidationError" }
 
 // Error satisfies the builtin error interface
-func (e OcrResultValidationError) Error() string {
+func (e OcrDetailValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -464,14 +468,14 @@ func (e OcrResultValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sOcrResult.%s: %s%s",
+		"invalid %sOcrDetail.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = OcrResultValidationError{}
+var _ error = OcrDetailValidationError{}
 
 var _ interface {
 	Field() string
@@ -479,48 +483,49 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = OcrResultValidationError{}
+} = OcrDetailValidationError{}
 
-// Validate checks the field values on OcrItem with the rules defined in the
+// Validate checks the field values on OcrPoint with the rules defined in the
 // proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.
-func (m *OcrItem) Validate() error {
+func (m *OcrPoint) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on OcrItem with the rules defined in the
-// proto definition for this message. If any rules are violated, the result is
-// a list of violation errors wrapped in OcrItemMultiError, or nil if none found.
-func (m *OcrItem) ValidateAll() error {
+// ValidateAll checks the field values on OcrPoint with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in OcrPointMultiError, or nil
+// if none found.
+func (m *OcrPoint) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *OcrItem) validate(all bool) error {
+func (m *OcrPoint) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
 
-	// no validation rules for Boxes
+	// no validation rules for TextRegion
 
 	// no validation rules for Confidence
 
 	// no validation rules for Text
 
 	if len(errors) > 0 {
-		return OcrItemMultiError(errors)
+		return OcrPointMultiError(errors)
 	}
 
 	return nil
 }
 
-// OcrItemMultiError is an error wrapping multiple validation errors returned
-// by OcrItem.ValidateAll() if the designated constraints aren't met.
-type OcrItemMultiError []error
+// OcrPointMultiError is an error wrapping multiple validation errors returned
+// by OcrPoint.ValidateAll() if the designated constraints aren't met.
+type OcrPointMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m OcrItemMultiError) Error() string {
+func (m OcrPointMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -529,11 +534,11 @@ func (m OcrItemMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m OcrItemMultiError) AllErrors() []error { return m }
+func (m OcrPointMultiError) AllErrors() []error { return m }
 
-// OcrItemValidationError is the validation error returned by OcrItem.Validate
-// if the designated constraints aren't met.
-type OcrItemValidationError struct {
+// OcrPointValidationError is the validation error returned by
+// OcrPoint.Validate if the designated constraints aren't met.
+type OcrPointValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -541,22 +546,22 @@ type OcrItemValidationError struct {
 }
 
 // Field function returns field value.
-func (e OcrItemValidationError) Field() string { return e.field }
+func (e OcrPointValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e OcrItemValidationError) Reason() string { return e.reason }
+func (e OcrPointValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e OcrItemValidationError) Cause() error { return e.cause }
+func (e OcrPointValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e OcrItemValidationError) Key() bool { return e.key }
+func (e OcrPointValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e OcrItemValidationError) ErrorName() string { return "OcrItemValidationError" }
+func (e OcrPointValidationError) ErrorName() string { return "OcrPointValidationError" }
 
 // Error satisfies the builtin error interface
-func (e OcrItemValidationError) Error() string {
+func (e OcrPointValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -568,14 +573,14 @@ func (e OcrItemValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sOcrItem.%s: %s%s",
+		"invalid %sOcrPoint.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = OcrItemValidationError{}
+var _ error = OcrPointValidationError{}
 
 var _ interface {
 	Field() string
@@ -583,7 +588,7 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = OcrItemValidationError{}
+} = OcrPointValidationError{}
 
 // Validate checks the field values on OcrReply with the rules defined in the
 // proto definition for this message. If any rules are violated, the first

@@ -45,10 +45,29 @@ paths:
                                 $ref: '#/components/schemas/oss.v1.PreSignedReply'
 components:
     schemas:
-        oss.v1.OcrItem:
+        oss.v1.OcrDetail:
             type: object
             properties:
-                boxes:
+                original:
+                    type: string
+                msg:
+                    type: string
+                parseLatency:
+                    type: string
+                detLatency:
+                    type: string
+                clsLatency:
+                    type: string
+                recLatency:
+                    type: string
+                points:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/oss.v1.OcrPoint'
+        oss.v1.OcrPoint:
+            type: object
+            properties:
+                textRegion:
                     type: string
                 confidence:
                     type: string
@@ -60,7 +79,7 @@ components:
                 list:
                     type: array
                     items:
-                        $ref: '#/components/schemas/oss.v1.OcrResult'
+                        $ref: '#/components/schemas/oss.v1.OcrDetail'
                 latency:
                     type: string
         oss.v1.OcrRequest:
@@ -70,21 +89,6 @@ components:
                     type: array
                     items:
                         type: string
-        oss.v1.OcrResult:
-            type: object
-            properties:
-                original:
-                    type: string
-                msg:
-                    type: string
-                list:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/oss.v1.OcrItem'
-                parseLatency:
-                    type: string
-                ocrLatency:
-                    type: string
         oss.v1.PreSignedReply:
             type: object
             properties:

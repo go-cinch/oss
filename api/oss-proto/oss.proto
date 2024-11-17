@@ -82,21 +82,23 @@ message OcrRequest {
   repeated string list = 1;
 }
 
-message OcrResult {
+message OcrDetail {
   string original = 1;
   string msg = 2;
-  repeated OcrItem list = 3;
   int64 parseLatency = 4;
-  int64 ocrLatency = 5;
+  int64 detLatency = 5;
+  int64 clsLatency = 6;
+  int64 recLatency = 7;
+  repeated OcrPoint points = 8;
 }
 
-message OcrItem {
-  string boxes = 1;
+message OcrPoint {
+  string textRegion = 1;
   string confidence = 2;
   string text = 3;
 }
 
 message OcrReply {
-  repeated OcrResult list = 1;
+  repeated OcrDetail list = 1;
   int64 latency = 2;
 }

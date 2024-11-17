@@ -21,9 +21,23 @@ import (
 var ProviderSet = wire.NewSet(New)
 
 type Resp struct {
-	Confidence float64 `json:"confidence"`
-	Text       string  `json:"text"`
-	TextRegion [][]int `json:"text_region"`
+	List []Detail `json:"list"`
+}
+
+type Detail struct {
+	Original     string  `json:"original"`
+	Msg          string  `json:"msg"`
+	ParseLatency int     `json:"parseLatency"`
+	DetLatency   int     `json:"detLatency"`
+	ClsLatency   int     `json:"clsLatency"`
+	RecLatency   int     `json:"recLatency"`
+	Points       []Point `json:"points"`
+}
+
+type Point struct {
+	Confidence string `json:"confidence"`
+	Text       string `json:"text"`
+	TextRegion string `json:"textRegion"`
 }
 
 type Ocr struct {
@@ -37,9 +51,9 @@ func New(c *conf.Bootstrap) (api API, err error) {
 	}, nil
 }
 
-func (c Ocr) Ocr(ctx context.Context, image string) (rp [][]Resp, err error) {
-	host := strings.Join([]string{c.host, "ocr_system"}, "/")
-	res, err := callOcr[[][]Resp](
+func (c Ocr) PredictAll(ctx context.Context, image string) (rp *Resp, err error) {
+	host := strings.Join([]string{c.host, "predict/all"}, "/")
+	res, err := callOcr[*Resp](
 		ctx,
 		request{
 			host: host,
@@ -53,7 +67,7 @@ func (c Ocr) Ocr(ctx context.Context, image string) (rp [][]Resp, err error) {
 	if err != nil {
 		return
 	}
-	if len(res) > 0 {
+	if len(res.List) > 0 {
 		rp = res
 		return
 	}
@@ -64,12 +78,6 @@ func (c Ocr) Ocr(ctx context.Context, image string) (rp [][]Resp, err error) {
 type request struct {
 	host string
 	body io.Reader
-}
-
-type resp[T any] struct {
-	Status  string `json:"status"`
-	Msg     string `json:"msg"`
-	Results T      `json:"results"`
 }
 
 func callOcr[T any](ctx context.Context, params request) (data T, err error) {
@@ -89,7 +97,7 @@ func callOcr[T any](ctx context.Context, params request) (data T, err error) {
 		return
 	}
 
-	var response resp[T]
+	var response T
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		msg := "invalid body"
@@ -100,15 +108,7 @@ func callOcr[T any](ctx context.Context, params request) (data T, err error) {
 		err = errors.New(msg)
 		return
 	}
-	if response.Status != "000" {
-		msg := response.Msg
-		log.
-			WithContext(ctx).
-			Warn(msg)
-		err = errors.New(msg)
-		return
-	}
-	data = response.Results
+	data = response
 	return
 }
 
