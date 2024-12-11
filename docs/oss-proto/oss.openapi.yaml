@@ -89,6 +89,11 @@ components:
                     type: array
                     items:
                         type: string
+                category:
+                    type: integer
+                    format: enum
+                threshold:
+                    type: string
         oss.v1.PreSignedReply:
             type: object
             properties:

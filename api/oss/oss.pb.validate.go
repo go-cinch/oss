@@ -263,6 +263,14 @@ func (m *OcrRequest) validate(all bool) error {
 
 	var errors []error
 
+	if m.Category != nil {
+		// no validation rules for Category
+	}
+
+	if m.Threshold != nil {
+		// no validation rules for Threshold
+	}
+
 	if len(errors) > 0 {
 		return OcrRequestMultiError(errors)
 	}
@@ -368,12 +376,6 @@ func (m *OcrDetail) validate(all bool) error {
 
 	// no validation rules for ParseLatency
 
-	// no validation rules for DetLatency
-
-	// no validation rules for ClsLatency
-
-	// no validation rules for RecLatency
-
 	for idx, item := range m.GetPoints() {
 		_, _ = idx, item
 
@@ -406,6 +408,18 @@ func (m *OcrDetail) validate(all bool) error {
 			}
 		}
 
+	}
+
+	if m.DetLatency != nil {
+		// no validation rules for DetLatency
+	}
+
+	if m.ClsLatency != nil {
+		// no validation rules for ClsLatency
+	}
+
+	if m.RecLatency != nil {
+		// no validation rules for RecLatency
 	}
 
 	if len(errors) > 0 {

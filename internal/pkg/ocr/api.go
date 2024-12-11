@@ -3,5 +3,6 @@ package ocr
 import "context"
 
 type API interface {
-	PredictAll(ctx context.Context, image string) (*Resp, error)
+	OcrPredict(ctx context.Context, condition *Req) (*Resp, error)
+	HelmetPredict(ctx context.Context, condition *Req) (*Resp, error)
 }
