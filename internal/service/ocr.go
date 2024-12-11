@@ -15,7 +15,7 @@ func (s *OssService) Ocr(ctx context.Context, req *oss.OcrRequest) (rp *oss.OcrR
 	defer span.End()
 	rp = &oss.OcrReply{}
 	now := time.Now().UnixMilli()
-	list := s.ocr.Ocr(ctx, req.List...)
+	list := s.ocr.Ocr(ctx, req)
 	copierx.Copy(&rp.List, list)
 	rp.Latency = time.Now().UnixMilli() - now
 	return

@@ -78,17 +78,24 @@ message PreSignedReply {
   string uri = 1;
 }
 
+enum OcrCategory {
+  OCR = 0;
+  HELMET = 1;
+}
+
 message OcrRequest {
   repeated string list = 1;
+  optional OcrCategory category = 2;
+  optional string threshold = 3;
 }
 
 message OcrDetail {
   string original = 1;
   string msg = 2;
   int64 parseLatency = 4;
-  int64 detLatency = 5;
-  int64 clsLatency = 6;
-  int64 recLatency = 7;
+  optional int64 detLatency = 5;
+  optional int64 clsLatency = 6;
+  optional int64 recLatency = 7;
   repeated OcrPoint points = 8;
 }
 

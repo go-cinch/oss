@@ -20,6 +20,11 @@ import (
 
 var ProviderSet = wire.NewSet(New)
 
+type Req struct {
+	Image     string  `json:"image"`
+	Threshold *string `json:"threshold"` // only for helmet, default 0.5
+}
+
 type Resp struct {
 	List []Detail `json:"list"`
 }
@@ -51,16 +56,49 @@ func New(c *conf.Bootstrap) (api API, err error) {
 	}, nil
 }
 
-func (c Ocr) PredictAll(ctx context.Context, image string) (rp *Resp, err error) {
-	host := strings.Join([]string{c.host, "predict/all"}, "/")
-	res, err := callOcr[*Resp](
+func (c Ocr) OcrPredict(ctx context.Context, condition *Req) (rp *Resp, err error) {
+	host := strings.Join([]string{c.host, "predict/ocr"}, "/")
+	res, err := callAPI[*Resp](
 		ctx,
 		request{
 			host: host,
 			body: bytes.NewReader([]byte(utils.Struct2Json(struct {
 				Images []string `json:"images"`
 			}{
-				Images: []string{image},
+				Images: []string{condition.Image},
+			}))),
+		},
+	)
+	if err != nil {
+		return
+	}
+	if len(res.List) > 0 {
+		rp = res
+		return
+	}
+	err = errors.New("cannot recognize")
+	return
+}
+
+func (c Ocr) HelmetPredict(ctx context.Context, condition *Req) (rp *Resp, err error) {
+	host := strings.Join([]string{c.host, "predict/helmet"}, "/")
+	threshold := "0.5"
+	if condition.Threshold != nil {
+		v, _ := strconv.ParseFloat(*condition.Threshold, 10)
+		if v > 0 && v <= 1 {
+			threshold = *condition.Threshold
+		}
+	}
+	res, err := callAPI[*Resp](
+		ctx,
+		request{
+			host: host,
+			body: bytes.NewReader([]byte(utils.Struct2Json(struct {
+				Images    []string `json:"images"`
+				Threshold string   `json:"threshold"`
+			}{
+				Images:    []string{condition.Image},
+				Threshold: threshold,
 			}))),
 		},
 	)
@@ -80,12 +118,11 @@ type request struct {
 	body io.Reader
 }
 
-func callOcr[T any](ctx context.Context, params request) (data T, err error) {
+func callAPI[T any](ctx context.Context, params request) (data T, err error) {
 	uri := params.host
 	log.
 		WithContext(ctx).
-		WithField("uri", uri).
-		Info("call ocr api")
+		Info("call ocr api: %s", uri)
 
 	req, _ := http.NewRequestWithContext(ctx, http.MethodPost, uri, params.body)
 

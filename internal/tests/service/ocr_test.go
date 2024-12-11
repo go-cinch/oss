@@ -315,7 +315,7 @@ func callOcr(ctx context.Context, images []string) (err error) {
 
 	req, _ := http.NewRequestWithContext(ctx, http.MethodPost, uri, bytes.NewReader([]byte(utils.Struct2Json(
 		struct {
-			List    []string `json:"list"`
+			List []string `json:"list"`
 		}{
 			List: images,
 		},
