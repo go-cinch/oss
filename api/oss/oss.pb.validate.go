@@ -267,8 +267,40 @@ func (m *OcrRequest) validate(all bool) error {
 		// no validation rules for Category
 	}
 
-	if m.Threshold != nil {
-		// no validation rules for Threshold
+	if m.BoxThreshold != nil {
+		// no validation rules for BoxThreshold
+	}
+
+	if m.DetMethod != nil {
+		// no validation rules for DetMethod
+	}
+
+	if m.MinSliceWidth != nil {
+		// no validation rules for MinSliceWidth
+	}
+
+	if m.MinSliceHeight != nil {
+		// no validation rules for MinSliceHeight
+	}
+
+	if m.SliceWidth != nil {
+		// no validation rules for SliceWidth
+	}
+
+	if m.SliceHeight != nil {
+		// no validation rules for SliceHeight
+	}
+
+	if m.OverlapThreshold != nil {
+		// no validation rules for OverlapThreshold
+	}
+
+	if m.OverlapWidthRatio != nil {
+		// no validation rules for OverlapWidthRatio
+	}
+
+	if m.OverlapHeightRatio != nil {
+		// no validation rules for OverlapHeightRatio
 	}
 
 	if len(errors) > 0 {

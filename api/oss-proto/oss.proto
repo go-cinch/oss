@@ -86,7 +86,15 @@ enum OcrCategory {
 message OcrRequest {
   repeated string list = 1;
   optional OcrCategory category = 2;
-  optional string threshold = 3;
+  optional string boxThreshold = 3;
+  optional string detMethod = 4;
+  optional string minSliceWidth = 5;
+  optional string minSliceHeight = 6;
+  optional string sliceWidth = 7;
+  optional string sliceHeight = 8;
+  optional string overlapThreshold = 9;
+  optional string overlapWidthRatio = 10;
+  optional string overlapHeightRatio = 11;
 }
 
 message OcrDetail {
