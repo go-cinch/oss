@@ -36,8 +36,16 @@ func (uc *OcrUseCase) Ocr(ctx context.Context, req *oss.OcrRequest) (list []ocr.
 		go func(idx int, data string) {
 			defer wg.Done()
 			list[idx] = *uc.processOcrRequest(ctx, sem, req.Category, &ocr.Req{
-				Image:     data,
-				Threshold: req.Threshold,
+				Image:              data,
+				BoxThreshold:       req.BoxThreshold,
+				DetMethod:          req.DetMethod,
+				MinSliceWidth:      req.MinSliceWidth,
+				MinSliceHeight:     req.MinSliceHeight,
+				SliceWidth:         req.SliceWidth,
+				SliceHeight:        req.SliceHeight,
+				OverlapThreshold:   req.OverlapThreshold,
+				OverlapWidthRatio:  req.OverlapWidthRatio,
+				OverlapHeightRatio: req.OverlapHeightRatio,
 			})
 		}(i, item)
 	}

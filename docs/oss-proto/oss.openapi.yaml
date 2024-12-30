@@ -92,7 +92,23 @@ components:
                 category:
                     type: integer
                     format: enum
-                threshold:
+                boxThreshold:
+                    type: string
+                detMethod:
+                    type: string
+                minSliceWidth:
+                    type: string
+                minSliceHeight:
+                    type: string
+                sliceWidth:
+                    type: string
+                sliceHeight:
+                    type: string
+                overlapThreshold:
+                    type: string
+                overlapWidthRatio:
+                    type: string
+                overlapHeightRatio:
                     type: string
         oss.v1.PreSignedReply:
             type: object
