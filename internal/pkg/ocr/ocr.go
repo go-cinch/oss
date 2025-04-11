@@ -54,13 +54,15 @@ type Point struct {
 }
 
 type Ocr struct {
-	host string
+	host     string
+	yoloHost string
 }
 
 func New(c *conf.Bootstrap) (api API, err error) {
 	log.Info("initialize ocr success")
 	return &Ocr{
-		host: c.Ocr.Host,
+		host:     c.Ocr.Host,
+		yoloHost: c.Ocr.YoloHost,
 	}, nil
 }
 
@@ -143,6 +145,32 @@ func (c Ocr) HelmetPredict(ctx context.Context, condition *Req) (rp *Resp, err e
 				OverlapThreshold:   *condition.OverlapThreshold,
 				OverlapWidthRatio:  *condition.OverlapWidthRatio,
 				OverlapHeightRatio: *condition.OverlapHeightRatio,
+			}))),
+		},
+	)
+	if err != nil {
+		return
+	}
+	if len(res.List) > 0 {
+		rp = res
+		return
+	}
+	err = errors.New("cannot recognize")
+	return
+}
+
+func (c Ocr) YOLOHelmetPredict(ctx context.Context, condition *Req) (rp *Resp, err error) {
+	host := strings.Join([]string{c.yoloHost, "helmet/predict"}, "/")
+	res, err := callAPI[*Resp](
+		ctx,
+		request{
+			host: host,
+			body: bytes.NewReader([]byte(utils.Struct2Json(struct {
+				Images       []string `json:"images"`
+				BoxThreshold string   `json:"box_threshold"`
+			}{
+				Images:       []string{condition.Image},
+				BoxThreshold: *condition.BoxThreshold,
 			}))),
 		},
 	)
