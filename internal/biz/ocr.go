@@ -69,6 +69,8 @@ func (uc *OcrUseCase) processOcrRequest(ctx context.Context, sem chan struct{}, 
 		res, err = uc.ocr.OcrPredict(ctx, condition)
 	case oss.OcrCategory_HELMET:
 		res, err = uc.ocr.HelmetPredict(ctx, condition)
+	case oss.OcrCategory_YOLO_HELMET:
+		res, err = uc.ocr.YOLOHelmetPredict(ctx, condition)
 	default:
 		log.WithContext(ctx).Warn("invalid category: %d", category)
 		return

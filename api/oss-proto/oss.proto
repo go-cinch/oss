@@ -81,6 +81,7 @@ message PreSignedReply {
 enum OcrCategory {
   OCR = 0;
   HELMET = 1;
+  YOLO_HELMET = 2;
 }
 
 message OcrRequest {

@@ -1,3 +1,4 @@
 ocr:
   host: 'http://ocr'
+  yoloHost: 'http://yolo'
   concurrency: 100
